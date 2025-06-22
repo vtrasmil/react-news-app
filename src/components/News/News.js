@@ -76,7 +76,7 @@ function News(props) {
 }
 
 News.defaultProps = {
-  country: "us",
+  country: "ph",
   newscategory: "general",
 };
 
