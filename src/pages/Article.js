@@ -1,92 +1,95 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Article() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
-  const url = state?.url;
-  const title = state?.title;
+  const {
+    title,
+    description,
+    content,
+    url,
+    image,
+    channel,
+    published,
+  } = state || {};
 
-  const [loading, setLoading] = useState(true);
-  const [content, setContent] = useState("");
-
-  useEffect(() => {
-    const loadArticle = async () => {
-      try {
-        setLoading(true);
-
-        const res = await fetch(
-          `/api/news?url=${encodeURIComponent(url)}`
-        );
-
-        const data = await res.json();
-        setContent(data.content);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (url) loadArticle();
-  }, [url]);
+  const text =
+    content ||
+    description ||
+    "No content available for this article.";
 
   return (
-    <div style={{ padding: 20, maxWidth: 1200, margin: "100px auto" }}>
-
-      {/* Back button */}
-      <button onClick={() => navigate(-1)} style={{
-        marginBottom: 15,
-        padding: "8px 12px",
-        borderRadius: 6,
-        border: "none",
-        background: "#333",
-        color: "#fff"
-      }}>
+    <div style={styles.container}>
+      <button onClick={() => navigate(-1)} style={styles.back}>
         ← Back
       </button>
 
-      {/* Title */}
-      <h2 style={{ marginBottom: 15, color: "#ffffff" }}>{title}</h2>
-
-      {/* Content */}
-      {loading ? (
-        <p>Loading article...</p>
-      ) : (
-        <div style={{
-          fontSize: "16px",
-          lineHeight: "1.8",
-          whiteSpace: "pre-wrap",
-          color: "#ddd"
-        }}>
-          {content}
-        </div>
+      {image && (
+        <img src={image} alt="article" style={styles.image} />
       )}
 
-      {/* FULL ARTICLE BUTTON */}
-      {url && (
-        <a
-          href={url}
-          target="_blank"
-          rel="noreferrer"
-          style={{
-            display: "inline-block",
-            marginTop: 20,
-            padding: "10px 16px",
-            background: "#ff3b3b",
-            color: "#fff",
-            borderRadius: 8,
-            textDecoration: "none",
-            fontWeight: "bold"
-          }}
-        >
-          Read Full Article →
-        </a>
-      )}
+      <h1 style={styles.title}>{title}</h1>
 
+      <p style={styles.meta}>
+        {channel} • {published}
+      </p>
+
+      <p style={styles.content}>
+        {text}
+      </p>
+
+      <a
+        href={url}
+        target="_blank"
+        rel="noreferrer"
+        style={styles.link}
+      >
+        Read Full Article →
+      </a>
     </div>
   );
 }
 
 export default Article;
+
+// ---------------- STYLES ----------------
+const styles = {
+  container: {
+    padding: "20px",
+    maxWidth: "800px",
+    margin: "0 auto",
+    color: "#fff",
+    background: "#111",
+    minHeight: "100vh",
+  },
+  back: {
+    marginBottom: "20px",
+    padding: "8px 12px",
+    cursor: "pointer",
+  },
+  image: {
+    width: "100%",
+    borderRadius: "10px",
+    marginBottom: "20px",
+  },
+  title: {
+    fontSize: "28px",
+    marginBottom: "10px",
+  },
+  meta: {
+    fontSize: "12px",
+    opacity: 0.7,
+    marginBottom: "20px",
+  },
+  content: {
+    fontSize: "16px",
+    lineHeight: "1.6",
+  },
+  link: {
+    display: "inline-block",
+    marginTop: "20px",
+    color: "#4da3ff",
+  },
+};
