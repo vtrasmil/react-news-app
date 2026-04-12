@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import "./Article.css";
 
 function Article() {
   const { state } = useLocation();
@@ -33,31 +34,25 @@ function Article() {
   }, [url]);
 
   return (
-    <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
-      
-      {/* Back button */}
-      <button onClick={() => navigate(-1)} style={{ marginBottom: 10 }}>
-        ← Back
-      </button>
+    <div className="article-container">
+      <div className="article-wrapper">
 
-      {/* Title */}
-      <h2>{title}</h2>
-
-      {/* Content */}
-      {loading ? (
-        <p>Loading article...</p>
-      ) : (
-        <div
-          style={{
-            marginTop: 20,
-            fontSize: "18px",
-            lineHeight: "1.8",
-            whiteSpace: "pre-wrap",
-          }}
+        <button
+          className="article-back-btn"
+          onClick={() => navigate(-1)}
         >
-          {content}
-        </div>
-      )}
+          ← Back
+        </button>
+
+        <div className="article-title">{title}</div>
+
+        {loading ? (
+          <div className="article-loading">Loading article...</div>
+        ) : (
+          <div className="article-content">{content}</div>
+        )}
+
+      </div>
     </div>
   );
 }
