@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function Article() {
@@ -8,24 +8,45 @@ function Article() {
   const url = state?.url;
   const title = state?.title;
 
-  return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-      
-      {/* Top bar */}
-      <div style={{ padding: "10px", borderBottom: "1px solid #ddd" }}>
-        <button onClick={() => navigate(-1)}>← Back</button>
-        <h3 style={{ margin: "10px 0" }}>{title}</h3>
-      </div>
+  const [loading, setLoading] = useState(true);
+  const [content, setContent] = useState("");
 
-      {/* Article */}
-      {url ? (
-        <iframe
-          src={url}
-          title="article"
-          style={{ flex: 1, width: "100%", border: "none" }}
-        />
+  useEffect(() => {
+    const fetchArticle = async () => {
+      try {
+        setLoading(true);
+
+        const res = await fetch(`/api/news?url=${encodeURIComponent(url)}`);
+        const data = await res.json();
+
+        setContent(data.html);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (url) fetchArticle();
+  }, [url]);
+
+  return (
+    <div style={{ padding: 20 }}>
+      <button onClick={() => navigate(-1)}>← Back</button>
+
+      <h2 style={{ marginTop: 10 }}>{title}</h2>
+
+      {loading ? (
+        <p>Loading article...</p>
       ) : (
-        <p style={{ padding: 20 }}>No article found</p>
+        <div
+          style={{
+            marginTop: 20,
+            lineHeight: "1.6",
+            fontSize: "16px",
+          }}
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
       )}
     </div>
   );
