@@ -59,7 +59,7 @@ const styles = {
   container: {
     padding: "20px",
     maxWidth: "800px",
-    margin: "0 auto",
+    margin: "50px auto",
     color: "#fff",
     background: "#111",
     minHeight: "100vh",
