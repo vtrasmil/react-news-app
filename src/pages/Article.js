@@ -52,7 +52,7 @@ function Article() {
   };
 
   return (
-    <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
+    <div style={{ padding: 20, maxWidth: 800, margin: "100px auto" }}>
       {/* BACK BUTTON */}
       <button onClick={() => navigate(-1)}>← Back</button>
 
@@ -71,15 +71,14 @@ function Article() {
       )}
 
       {/* TITLE */}
-      <h1 style={{ marginTop: 10 }}>{title}</h1>
-
+      <h1 style={{ marginTop: 10, color: "#ffffff" }}>{title}</h1>
       {/* META */}
       <p style={{ color: "#777", fontSize: 14 }}>
         {channel} • {published}
       </p>
 
       {/* CONTENT */}
-      <p style={{ marginTop: 20, lineHeight: 1.6 }}>
+      <p style={{ marginTop: 20, lineHeight: 1.6, color: "#777"}}>
         {getArticleText()}
       </p>
 
