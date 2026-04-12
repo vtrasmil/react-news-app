@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import PropTypes from "prop-types";
+
 import NullImage from "../../components/Images/nullImage.png";
 import Loading from "../Loading/Loading";
 import NewsItem from "../NewsItem/NewsItem";
+
 import { v4 as uuidv4 } from "uuid";
 import { Col, Row } from "react-bootstrap";
+
 import { header } from "../../config/config";
 import { endpointPath } from "../../config/api";
+
 import { Container, Header, card } from "./index";
 
 function News(props) {
@@ -26,7 +30,10 @@ function News(props) {
     document.title = `${title} - News`;
   }, [title]);
 
-  const updatenews = async () => {
+  // -----------------------------
+  // FETCH NEWS (STABLE FUNCTION)
+  // -----------------------------
+  const updatenews = useCallback(async () => {
     try {
       setLoading(true);
 
@@ -41,11 +48,14 @@ function News(props) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [country, category]);
 
+  // -----------------------------
+  // EFFECT TRIGGER
+  // -----------------------------
   useEffect(() => {
     updatenews();
-  }, [category, country]);
+  }, [updatenews]);
 
   return (
     <>
