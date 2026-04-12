@@ -33,7 +33,7 @@ function Article() {
   }, [url]);
 
   return (
-    <div style={{ padding: 20, maxWidth: 1200, margin: "100 auto" }}>
+    <div style={{ padding: 20, maxWidth: 1200, margin: "100px auto" }}>
 
       {/* Back button */}
       <button onClick={() => navigate(-1)} style={{
