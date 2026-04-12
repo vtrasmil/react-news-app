@@ -33,7 +33,7 @@ function Article() {
   }, [url]);
 
   return (
-    <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
+    <div style={{ padding: 20, maxWidth: 1200, margin: "100 auto" }}>
 
       {/* Back button */}
       <button onClick={() => navigate(-1)} style={{
@@ -48,7 +48,7 @@ function Article() {
       </button>
 
       {/* Title */}
-      <h2 style={{ marginBottom: 15 }}>{title}</h2>
+      <h2 style={{ marginBottom: 15, color: #ffffff }}>{title}</h2>
 
       {/* Content */}
       {loading ? (
