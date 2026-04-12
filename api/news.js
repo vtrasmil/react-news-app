@@ -21,24 +21,45 @@ export default async function handler(req, res) {
     }
 
     // --------------------------------------------------
-    // MODE 2: ARTICLE PREVIEW (SAFE VERSION)
+    // MODE 2: ARTICLE CLEAN READER MODE
     // --------------------------------------------------
-
     const response = await fetch(url);
-    const html = await response.text();
+    let html = await response.text();
 
-    // VERY SAFE CLEANING (NO HEAVY SCRAPING)
-    const content = html
+    // STEP 1: Remove heavy unwanted blocks
+    html = html
       .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
-      .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, "")
+      .replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/gi, "")
+      .replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, "")
       .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, "")
       .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, "")
-      .replace(/<!--[\s\S]*?-->/g, "")
-      .replace(/<[^>]*>/g, " ")
+      .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, "")
+      .replace(/<!--[\s\S]*?-->/g, "");
+
+    // STEP 2: Try isolate main body
+    const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    if (bodyMatch) html = bodyMatch[1];
+
+    // STEP 3: Convert to text
+    let content = html.replace(/<[^>]*>/g, " ");
+
+    // STEP 4: Remove known junk phrases (your issue fix)
+    content = content
+      .replace(/ADVERTISEMENT/gi, "")
+      .replace(/LOAD MORE ARTICLES/gi, "")
+      .replace(/LOADING CONTENT/gi, "")
+      .replace(/RETRY LOADING/gi, "")
+      .replace(/LOAD MORE/gi, "")
+      .replace(/CLICK HERE/gi, "")
+      .replace(/READ MORE/gi, "")
+      .replace(/SUBSCRIBE/gi, "")
+      .replace(/NEXT ARTICLE/gi, "")
       .replace(/\s+/g, " ")
-      .trim()
-      .slice(0, 3500); // preview only
+      .trim();
+
+    // STEP 5: Limit size for performance
+    content = content.slice(0, 5000);
 
     return res.status(200).json({
       url,
@@ -47,6 +68,8 @@ export default async function handler(req, res) {
 
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Failed to load article" });
+    return res.status(500).json({
+      error: "Failed to load article"
+    });
   }
 }
