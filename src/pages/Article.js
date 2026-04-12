@@ -78,7 +78,7 @@ function Article() {
       </p>
 
       {/* CONTENT */}
-      <p style={{ marginTop: 20, lineHeight: 1.6, color: "#777"}}>
+      <p style={{ marginTop: 20, lineHeight: 1.6, color: "#ffffff"}}>
         {getArticleText()}
       </p>
 
