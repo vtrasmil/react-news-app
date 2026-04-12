@@ -5,46 +5,58 @@ function Article() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
+  if (!state) {
+    return (
+      <div style={{ padding: 20 }}>
+        <h2>No article found</h2>
+        <button onClick={() => navigate(-1)}>Back</button>
+      </div>
+    );
+  }
+
   const {
     title,
     description,
     content,
+    imageUrl,
     url,
-    image,
     channel,
     published,
-  } = state || {};
-
-  const text =
-    content ||
-    description ||
-    "No content available for this article.";
+  } = state;
 
   return (
-    <div style={styles.container}>
-      <button onClick={() => navigate(-1)} style={styles.back}>
-        ← Back
-      </button>
+    <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
+      <button onClick={() => navigate(-1)}>← Back</button>
 
-      {image && (
-        <img src={image} alt="article" style={styles.image} />
+      {/* IMAGE FIX */}
+      {imageUrl && (
+        <img
+          src={imageUrl}
+          alt={title}
+          style={{
+            width: "100%",
+            borderRadius: 10,
+            marginTop: 15,
+            marginBottom: 15,
+          }}
+        />
       )}
 
-      <h1 style={styles.title}>{title}</h1>
+      <h1>{title}</h1>
 
-      <p style={styles.meta}>
+      <p style={{ color: "#777" }}>
         {channel} • {published}
       </p>
 
-      <p style={styles.content}>
-        {text}
+      <p style={{ marginTop: 20, lineHeight: 1.6 }}>
+        {content || description}
       </p>
 
       <a
         href={url}
         target="_blank"
         rel="noreferrer"
-        style={styles.link}
+        style={{ display: "inline-block", marginTop: 20 }}
       >
         Read Full Article →
       </a>
@@ -53,44 +65,3 @@ function Article() {
 }
 
 export default Article;
-
-// ---------------- STYLES ----------------
-const styles = {
-  container: {
-    padding: "20px",
-    maxWidth: "800px",
-    margin: "100px auto",
-    color: "#fff",
-    background: "#111",
-    minHeight: "100vh",
-    
-  },
-  back: {
-    marginBottom: "20px",
-    padding: "8px 12px",
-    cursor: "pointer",
-  },
-  image: {
-    width: "100%",
-    borderRadius: "10px",
-    marginBottom: "20px",
-  },
-  title: {
-    fontSize: "28px",
-    marginBottom: "10px",
-  },
-  meta: {
-    fontSize: "12px",
-    opacity: 0.7,
-    marginBottom: "20px",
-  },
-  content: {
-    fontSize: "16px",
-    lineHeight: "1.6",
-  },
-  link: {
-    display: "inline-block",
-    marginTop: "20px",
-    color: "#4da3ff",
-  },
-};
