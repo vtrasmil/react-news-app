@@ -25,6 +25,12 @@ function NewsItem(props) {
     });
   };
 
+  // ✅ SAFE fallback (IMPORTANT FIX)
+  const safeDescription =
+    description && description.trim().length > 0
+      ? description
+      : "No preview available. Click Read More to open full article.";
+
   return (
     <Card className="card">
       <Card.Img className="card-img" variant="top" src={imageUrl} alt={alt} />
@@ -33,7 +39,7 @@ function NewsItem(props) {
         <Card.Title>{title}</Card.Title>
 
         <Card.Text className="card-description">
-          {description}
+          {safeDescription}
         </Card.Text>
 
         <Details channel={channel} published={published} />
