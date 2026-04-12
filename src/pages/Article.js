@@ -25,7 +25,7 @@ function Article() {
   } = state;
 
   return (
-    <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
+    <div style={{ padding: 20, maxWidth: 800, margin: "100px auto" }}>
       <button onClick={() => navigate(-1)}>← Back</button>
 
       {/* IMAGE FIX */}
@@ -42,9 +42,9 @@ function Article() {
         />
       )}
 
-      <h1>{title}</h1>
+      <h1 style={{ color: "#ffffff">{title}</h1>
 
-      <p style={{ color: "#777" }}>
+      <p style={{ color: "#ffffff" }}>
         {channel} • {published}
       </p>
 
