@@ -42,7 +42,7 @@ function Article() {
         />
       )}
 
-      <h1 style={{ color: "#ffffff">{title}</h1>
+      <h1 style={{ color: "#ffffff" }}>{title}</h1>
 
       <p style={{ color: "#ffffff" }}>
         {channel} • {published}
