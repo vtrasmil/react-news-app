@@ -15,23 +15,29 @@ function NewsItem(props) {
     channel,
     published,
     urlNews,
+    content,
   } = props;
 
   const navigate = useNavigate();
 
   const handleReadMore = () => {
     navigate("/article", {
-      state: { url: urlNews, title },
+      state: {
+        title,
+        description,
+        content,
+        url: urlNews,
+        image: imageUrl,
+        channel,
+        published,
+      },
     });
   };
 
-  // --------------------------------------------------
-  // SAFE FALLBACK (IMPORTANT FIX)
-  // --------------------------------------------------
-  const safeDescription =
-    description && description.trim().length > 0
-      ? description
-      : "No preview available. Click Read More to open full article.";
+  const preview =
+    description ||
+    content?.slice(0, 200) ||
+    "Click Read More to view full article.";
 
   return (
     <Card className="card">
@@ -41,7 +47,7 @@ function NewsItem(props) {
         <Card.Title>{title}</Card.Title>
 
         <Card.Text className="card-description">
-          {safeDescription}
+          {preview}
         </Card.Text>
 
         <Details channel={channel} published={published} />
@@ -62,6 +68,7 @@ NewsItem.propTypes = {
   channel: PropTypes.string,
   published: PropTypes.string,
   urlNews: PropTypes.string,
+  content: PropTypes.string,
 };
 
 export default NewsItem;
