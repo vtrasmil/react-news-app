@@ -13,23 +13,19 @@ export default async function handler(req, res) {
     const response = await fetch(apiUrl);
     const data = await response.json();
 
-    // --------------------------------------------------
-    // NORMALIZE ARTICLES (CRITICAL FIX)
-    // --------------------------------------------------
     if (data.articles) {
       data.articles = data.articles.map((article) => {
-        const safeText =
-          article.description ||
-          article.content ||
-          article.title ||
-          "No preview available";
-
         return {
           ...article,
 
-          description: cleanText(safeText),
+          title: cleanText(article.title),
+          description: cleanText(article.description || ""),
+          content: cleanText(article.content || ""),
 
-          content: cleanText(article.content || article.description || ""),
+          url: article.url,
+          image: article.image,
+          publishedAt: article.publishedAt,
+          source: article.source,
         };
       });
     }
@@ -44,13 +40,11 @@ export default async function handler(req, res) {
   }
 }
 
-// --------------------------------------------------
-// CLEANER FUNCTION
-// --------------------------------------------------
+// ---------------- CLEANER ----------------
 function cleanText(text = "") {
   return text
     .replace(/\[\+\d+\schars\]/g, "")
-    .replace(/&nbsp;|&amp;|&#039;|&ldquo;|&rdquo;|&lsquo;|&rsquo;|&mdash;/g, " ")
+    .replace(/&nbsp;|&amp;|&#039;|&ldquo;|&rdquo;|&lsquo;|&rsquo;|&mdash;|&#39;/g, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
