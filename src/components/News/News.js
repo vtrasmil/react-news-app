@@ -12,33 +12,41 @@ import { Container, Header, card } from "./index";
 
 function News(props) {
   const { newscategory, country } = props;
+
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const capitaLize = (string) => {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
+  const capitalize = (string) =>
+    string.charAt(0).toUpperCase() + string.slice(1);
 
   const category = newscategory;
-  const title = capitaLize(category);
-  document.title = `${capitaLize(title)} - News`;
+  const title = capitalize(category);
+
+  useEffect(() => {
+    document.title = `${title} - News`;
+  }, [title]);
 
   const updatenews = async () => {
     try {
-      const response = await axios.get(endpointPath(country, category));
       setLoading(true);
+
+      const response = await axios.get(endpointPath(country, category));
       const parsedData = response.data;
-      setArticles(parsedData.articles);
-      setLoading(false);
+
+      // Ensure safe data structure
+      setArticles(parsedData?.articles || []);
     } catch (error) {
-      console.error(error);
+      console.error("News fetch error:", error);
+      setArticles([]); // fallback
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     updatenews();
     // eslint-disable-next-line
-  }, []);
+  }, [category, country]); // refetch when category changes
 
   return (
     <>
@@ -46,27 +54,38 @@ function News(props) {
         <Loading />
       ) : (
         <>
-          <Header>{header(capitaLize(category))}</Header>
+          <Header>{header(title)}</Header>
           <Container>
             <Row>
-              {articles.map((element) => {
-                return (
-                  <Col sm={12} md={6} lg={4} xl={3} style={card} key={uuidv4()}>
+              {articles.length > 0 ? (
+                articles.map((element) => (
+                  <Col
+                    sm={12}
+                    md={6}
+                    lg={4}
+                    xl={3}
+                    style={card}
+                    key={uuidv4()}
+                  >
                     <NewsItem
-                      title={element.title}
-                      description={element.description}
+                      title={element.title || "No Title"}
+                      description={element.description || "No Description"}
                       published={element.publishedAt}
-                      channel={element.source.name}
-                      alt="News image"
                       publishedAt={element.publishedAt}
+                      channel={element.source?.name || "Unknown"}
+                      alt="News image"
                       imageUrl={
-                        element.image === null ? NullImage : element.image
+                        element.image ? element.image : NullImage
                       }
                       urlNews={element.url}
                     />
                   </Col>
-                );
-              })}
+                ))
+              ) : (
+                <p style={{ textAlign: "center", width: "100%" }}>
+                  No Results Found
+                </p>
+              )}
             </Row>
           </Container>
         </>
