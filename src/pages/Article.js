@@ -9,7 +9,7 @@ function Article() {
     return (
       <div style={{ padding: 20 }}>
         <h2>No article found</h2>
-        <button onClick={() => navigate(-1)}>Back</button>
+        <button onClick={() => navigate(-1)}>← Back</button>
       </div>
     );
   }
@@ -24,11 +24,23 @@ function Article() {
     published,
   } = state;
 
+  // -----------------------------
+  // CLEAN CONTENT FUNCTION
+  // -----------------------------
+  const cleanText = (text) => {
+    if (!text) return "";
+
+    return text
+      .replace(/\[\+\d+\schars\]/g, "") // removes [+123 chars]
+      .replace(/\s+/g, " ") // remove extra spaces
+      .trim();
+  };
+
   return (
-    <div style={{ padding: 20, maxWidth: 800, margin: "100px auto" }}>
+    <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
       <button onClick={() => navigate(-1)}>← Back</button>
 
-      {/* IMAGE FIX */}
+      {/* IMAGE */}
       {imageUrl && (
         <img
           src={imageUrl}
@@ -42,21 +54,28 @@ function Article() {
         />
       )}
 
-      <h1 style={{ color: "#ffffff" }}>{title}</h1>
+      {/* TITLE */}
+      <h1>{title}</h1>
 
-      <p style={{ color: "#ffffff" }}>
+      {/* META */}
+      <p style={{ color: "#777" }}>
         {channel} • {published}
       </p>
 
-      <p style={{ marginTop: 20, lineHeight: 1.6, color: "#ffffff"}}>
-        {content || description}
+      {/* CONTENT (CLEANED) */}
+      <p style={{ marginTop: 20, lineHeight: 1.6 }}>
+        {cleanText(content || description)}
       </p>
 
+      {/* LINK */}
       <a
         href={url}
         target="_blank"
         rel="noreferrer"
-        style={{ display: "inline-block", marginTop: 20 }}
+        style={{
+          display: "inline-block",
+          marginTop: 20,
+        }}
       >
         Read Full Article →
       </a>
