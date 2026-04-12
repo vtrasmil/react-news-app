@@ -30,10 +30,11 @@ function News(props) {
     try {
       setLoading(true);
 
-      const response = await axios.get(endpointPath(country, category));
-      const parsedData = response.data;
+      const response = await axios.get(
+        endpointPath(country, category)
+      );
 
-      setArticles(parsedData?.articles || []);
+      setArticles(response.data?.articles || []);
     } catch (error) {
       console.error("News fetch error:", error);
       setArticles([]);
@@ -44,7 +45,6 @@ function News(props) {
 
   useEffect(() => {
     updatenews();
-    // eslint-disable-next-line
   }, [category, country]);
 
   return (
@@ -54,6 +54,7 @@ function News(props) {
       ) : (
         <>
           <Header>{header(title)}</Header>
+
           <Container>
             <Row>
               {articles.length > 0 ? (
@@ -64,13 +65,13 @@ function News(props) {
                     lg={4}
                     xl={3}
                     style={card}
-                    key={uuidv4()}
+                    key={element.url || uuidv4()}
                   >
                     <NewsItem
                       title={element.title || "No Title"}
                       description={element.description || ""}
-                      content={element.content || ""}   {/* ✅ FIX HERE */}
-                      published={element.publishedAt}
+                      content={element.content || ""}   {/* SAFE */}
+                      published={element.publishedAt || ""}
                       channel={element.source?.name || "Unknown"}
                       alt="News image"
                       imageUrl={element.image || NullImage}
