@@ -48,7 +48,7 @@ function Article() {
       </button>
 
       {/* Title */}
-      <h2 style={{ marginBottom: 15, color: #ffffff }}>{title}</h2>
+      <h2 style={{ marginBottom: 15, color: "#ffffff" }}>{title}</h2>
 
       {/* Content */}
       {loading ? (
