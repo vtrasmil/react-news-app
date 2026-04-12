@@ -33,11 +33,10 @@ function News(props) {
       const response = await axios.get(endpointPath(country, category));
       const parsedData = response.data;
 
-      // Ensure safe data structure
       setArticles(parsedData?.articles || []);
     } catch (error) {
       console.error("News fetch error:", error);
-      setArticles([]); // fallback
+      setArticles([]);
     } finally {
       setLoading(false);
     }
@@ -46,7 +45,7 @@ function News(props) {
   useEffect(() => {
     updatenews();
     // eslint-disable-next-line
-  }, [category, country]); // refetch when category changes
+  }, [category, country]);
 
   return (
     <>
@@ -69,14 +68,12 @@ function News(props) {
                   >
                     <NewsItem
                       title={element.title || "No Title"}
-                      description={element.description || "No Description"}
+                      description={element.description || ""}
+                      content={element.content || ""}   {/* ✅ FIX HERE */}
                       published={element.publishedAt}
-                      publishedAt={element.publishedAt}
                       channel={element.source?.name || "Unknown"}
                       alt="News image"
-                      imageUrl={
-                        element.image ? element.image : NullImage
-                      }
+                      imageUrl={element.image || NullImage}
                       urlNews={element.url}
                     />
                   </Col>
