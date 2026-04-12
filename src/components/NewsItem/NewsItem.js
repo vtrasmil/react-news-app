@@ -25,7 +25,9 @@ function NewsItem(props) {
     });
   };
 
-  // ✅ SAFE fallback (IMPORTANT FIX)
+  // --------------------------------------------------
+  // SAFE FALLBACK (IMPORTANT FIX)
+  // --------------------------------------------------
   const safeDescription =
     description && description.trim().length > 0
       ? description
