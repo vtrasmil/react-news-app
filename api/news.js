@@ -21,45 +21,45 @@ export default async function handler(req, res) {
     }
 
     // --------------------------------------------------
-    // MODE 2: ARTICLE CLEAN READER MODE
+    // MODE 2: ARTICLE READER MODE (CLEAN)
     // --------------------------------------------------
+
     const response = await fetch(url);
-    let html = await response.text();
+    const html = await response.text();
 
-    // STEP 1: Remove heavy unwanted blocks
-    html = html
-      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
-      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
-      .replace(/<noscript[^>]*>[\s\S]*?<\/noscript>/gi, "")
-      .replace(/<iframe[^>]*>[\s\S]*?<\/iframe>/gi, "")
-      .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, "")
-      .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, "")
-      .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, "")
-      .replace(/<!--[\s\S]*?-->/g, "");
+    // STEP 1: extract ONLY paragraph content (best signal)
+    const paragraphs = [...html.matchAll(/<p[^>]*>(.*?)<\/p>/gi)];
 
-    // STEP 2: Try isolate main body
-    const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-    if (bodyMatch) html = bodyMatch[1];
+    let content = paragraphs.map(p => p[1]).join(" ");
 
-    // STEP 3: Convert to text
-    let content = html.replace(/<[^>]*>/g, " ");
+    // STEP 2: fallback if empty
+    if (!content || content.length < 100) {
+      content = html;
+    }
 
-    // STEP 4: Remove known junk phrases (your issue fix)
+    // STEP 3: remove remaining HTML tags
+    content = content.replace(/<[^>]*>/g, " ");
+
+    // STEP 4: remove known junk patterns (IMPORTANT FIX)
     content = content
+      .replace(/We use cookies[^.]*\./gi, "")
+      .replace(/accept our use of cookies[^.]*\./gi, "")
+      .replace(/FIND OUT MORE/gi, "")
+      .replace(/I AGREE/gi, "")
       .replace(/ADVERTISEMENT/gi, "")
-      .replace(/LOAD MORE ARTICLES/gi, "")
-      .replace(/LOADING CONTENT/gi, "")
-      .replace(/RETRY LOADING/gi, "")
-      .replace(/LOAD MORE/gi, "")
-      .replace(/CLICK HERE/gi, "")
-      .replace(/READ MORE/gi, "")
-      .replace(/SUBSCRIBE/gi, "")
-      .replace(/NEXT ARTICLE/gi, "")
+      .replace(/Related Stories/gi, "")
+      .replace(/Most Popular/gi, "")
+      .replace(/More Videos/gi, "")
+      .replace(/Tags:/gi, "")
+      .replace(/Skip to main content/gi, "")
+      .replace(/Skip to navigation/gi, "")
+      .replace(/Make this your preferred source[^.]*\./gi, "")
+      .replace(/&nbsp;/gi, " ")
       .replace(/\s+/g, " ")
       .trim();
 
-    // STEP 5: Limit size for performance
-    content = content.slice(0, 5000);
+    // STEP 5: limit size for performance
+    content = content.slice(0, 6000);
 
     return res.status(200).json({
       url,
