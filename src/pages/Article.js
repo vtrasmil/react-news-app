@@ -25,19 +25,35 @@ function Article() {
   } = state;
 
   // -----------------------------
-  // CLEAN CONTENT FUNCTION
+  // CLEAN GNEWS TEXT
   // -----------------------------
   const cleanText = (text) => {
     if (!text) return "";
 
     return text
-      .replace(/\[\+\d+\schars\]/g, "") // removes [+123 chars]
-      .replace(/\s+/g, " ") // remove extra spaces
+      // removes [1868 chars], [+1868 chars], etc.
+      .replace(/\[\+?\d+\s*chars\]/gi, "")
+      
+      // removes "... 1868 chars" style endings
+      .replace(/\.\.\.\s*\d+\s*chars/gi, "")
+      
+      // removes accidental CTA text
+      .replace(/read full article\s*→?/gi, "")
+      
+      // normalize whitespace
+      .replace(/\s+/g, " ")
       .trim();
+  };
+
+  // Prefer description (more stable than content)
+  const getArticleText = () => {
+    const raw = description || content || "";
+    return cleanText(raw);
   };
 
   return (
     <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
+      {/* BACK BUTTON */}
       <button onClick={() => navigate(-1)}>← Back</button>
 
       {/* IMAGE */}
@@ -55,16 +71,16 @@ function Article() {
       )}
 
       {/* TITLE */}
-      <h1>{title}</h1>
+      <h1 style={{ marginTop: 10 }}>{title}</h1>
 
       {/* META */}
-      <p style={{ color: "#777" }}>
+      <p style={{ color: "#777", fontSize: 14 }}>
         {channel} • {published}
       </p>
 
-      {/* CONTENT (CLEANED) */}
+      {/* CONTENT */}
       <p style={{ marginTop: 20, lineHeight: 1.6 }}>
-        {cleanText(content || description)}
+        {getArticleText()}
       </p>
 
       {/* LINK */}
@@ -75,6 +91,7 @@ function Article() {
         style={{
           display: "inline-block",
           marginTop: 20,
+          color: "#0066cc",
         }}
       >
         Read Full Article →
