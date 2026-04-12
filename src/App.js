@@ -10,18 +10,21 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { router } from "./config/config";
 
 function App() {
-  // --------------------------------------------------
-  // 🌍 USER COUNTRY STATE
-  // --------------------------------------------------
-  const [country, setCountry] = useState("ph"); // fallback
+  // ----------------------------
+  // COUNTRY STATE (IMPORTANT)
+  // ----------------------------
+  const [country, setCountry] = useState(null);
 
+  // ----------------------------
+  // GEO DETECTION
+  // ----------------------------
   useEffect(() => {
     const detectCountry = async () => {
       try {
-        const saved = localStorage.getItem("country");
+        const cached = localStorage.getItem("country");
 
-        if (saved) {
-          setCountry(saved);
+        if (cached) {
+          setCountry(cached);
           return;
         }
 
@@ -32,14 +35,28 @@ function App() {
           const code = data.country_code.toLowerCase();
           setCountry(code);
           localStorage.setItem("country", code);
+        } else {
+          setCountry("ph"); // fallback only if API fails
         }
       } catch (err) {
         console.log("Geo detection failed, using PH fallback");
+        setCountry("ph");
       }
     };
 
     detectCountry();
   }, []);
+
+  // ----------------------------
+  // WAIT UNTIL COUNTRY IS READY
+  // ----------------------------
+  if (!country) {
+    return (
+      <div style={{ padding: 20 }}>
+        Loading location...
+      </div>
+    );
+  }
 
   return (
     <Router>
@@ -54,7 +71,7 @@ function App() {
             element={
               <News
                 newscategory={path.category}
-                country={country}   // ✅ DYNAMIC COUNTRY
+                country={country}
               />
             }
           />
