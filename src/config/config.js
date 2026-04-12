@@ -28,7 +28,7 @@ export const router = [
   { path: "/categories/technology", key: "technology", category: "technology", country: "ph" }
 ];
 
-export const summary = "Channel and PublishedAt";
+export const summary = "Source";
 export const newsChannel = (channel) => `${channel}`;
 export const lastUpdate = (published) =>
   `${moment(published).format("ddd, DD MMM YYYY HH:mm:ss")}`;
