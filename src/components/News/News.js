@@ -70,7 +70,7 @@ function News(props) {
                     <NewsItem
                       title={element.title || "No Title"}
                       description={element.description || ""}
-                      content={element.content || ""}   {/* SAFE */}
+                      content={element.content || ""}
                       published={element.publishedAt || ""}
                       channel={element.source?.name || "Unknown"}
                       alt="News image"
