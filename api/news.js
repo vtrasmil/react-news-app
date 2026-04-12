@@ -4,9 +4,6 @@ export default async function handler(req, res) {
 
     const API_KEY = process.env.GNEWS_API_KEY;
 
-    // --------------------------------------------------
-    // MODE 1: NEWS FEED (NO SCRAPING ANYMORE)
-    // --------------------------------------------------
     const baseUrl = q
       ? `https://gnews.io/api/v4/search?q=${encodeURIComponent(q)}`
       : `https://gnews.io/api/v4/top-headlines?country=${country}&category=${category}`;
@@ -17,16 +14,22 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     // --------------------------------------------------
-    // CLEAN ARTICLES SAFELY (NO URL SCRAPING)
+    // NORMALIZE ARTICLES (CRITICAL FIX)
     // --------------------------------------------------
     if (data.articles) {
       data.articles = data.articles.map((article) => {
+        const safeText =
+          article.description ||
+          article.content ||
+          article.title ||
+          "No preview available";
+
         return {
           ...article,
 
-          // Use ONLY API-provided content (IMPORTANT FIX)
-          content: cleanText(article.content),
-          description: cleanText(article.description),
+          description: cleanText(safeText),
+
+          content: cleanText(article.content || article.description || ""),
         };
       });
     }
@@ -46,7 +49,7 @@ export default async function handler(req, res) {
 // --------------------------------------------------
 function cleanText(text = "") {
   return text
-    .replace(/\[\+\d+\schars\]/g, "") // removes "[+1234 chars]"
+    .replace(/\[\+\d+\schars\]/g, "")
     .replace(/&nbsp;|&amp;|&#039;|&ldquo;|&rdquo;|&lsquo;|&rsquo;|&mdash;/g, " ")
     .replace(/\s+/g, " ")
     .trim();
