@@ -12,14 +12,16 @@ function Article() {
   const [content, setContent] = useState("");
 
   useEffect(() => {
-    const fetchArticle = async () => {
+    const loadArticle = async () => {
       try {
         setLoading(true);
 
-        const res = await fetch(`/api/news?url=${encodeURIComponent(url)}`);
-        const data = await res.json();
+        const res = await fetch(
+          `/api/news?url=${encodeURIComponent(url)}`
+        );
 
-        setContent(data.html);
+        const data = await res.json();
+        setContent(data.content);
       } catch (err) {
         console.error(err);
       } finally {
@@ -27,26 +29,34 @@ function Article() {
       }
     };
 
-    if (url) fetchArticle();
+    if (url) loadArticle();
   }, [url]);
 
   return (
-    <div style={{ padding: 20 }}>
-      <button onClick={() => navigate(-1)}>← Back</button>
+    <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
+      
+      {/* Back button */}
+      <button onClick={() => navigate(-1)} style={{ marginBottom: 10 }}>
+        ← Back
+      </button>
 
-      <h2 style={{ marginTop: 10 }}>{title}</h2>
+      {/* Title */}
+      <h2>{title}</h2>
 
+      {/* Content */}
       {loading ? (
         <p>Loading article...</p>
       ) : (
         <div
           style={{
             marginTop: 20,
-            lineHeight: "1.6",
-            fontSize: "16px",
+            fontSize: "18px",
+            lineHeight: "1.8",
+            whiteSpace: "pre-wrap",
           }}
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
+        >
+          {content}
+        </div>
       )}
     </div>
   );
