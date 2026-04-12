@@ -48,7 +48,7 @@ function Article() {
         {channel} • {published}
       </p>
 
-      <p style={{ marginTop: 20, lineHeight: 1.6 }}>
+      <p style={{ marginTop: 20, lineHeight: 1.6, color: "#ffffff"}}>
         {content || description}
       </p>
 
