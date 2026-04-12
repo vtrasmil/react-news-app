@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import "./Articles.css";
 
 function Article() {
   const { state } = useLocation();
@@ -34,25 +33,58 @@ function Article() {
   }, [url]);
 
   return (
-    <div className="article-container">
-      <div className="article-wrapper">
+    <div style={{ padding: 20, maxWidth: 800, margin: "0 auto" }}>
 
-        <button
-          className="article-back-btn"
-          onClick={() => navigate(-1)}
+      {/* Back button */}
+      <button onClick={() => navigate(-1)} style={{
+        marginBottom: 15,
+        padding: "8px 12px",
+        borderRadius: 6,
+        border: "none",
+        background: "#333",
+        color: "#fff"
+      }}>
+        ← Back
+      </button>
+
+      {/* Title */}
+      <h2 style={{ marginBottom: 15 }}>{title}</h2>
+
+      {/* Content */}
+      {loading ? (
+        <p>Loading article...</p>
+      ) : (
+        <div style={{
+          fontSize: "16px",
+          lineHeight: "1.8",
+          whiteSpace: "pre-wrap",
+          color: "#ddd"
+        }}>
+          {content}
+        </div>
+      )}
+
+      {/* FULL ARTICLE BUTTON */}
+      {url && (
+        <a
+          href={url}
+          target="_blank"
+          rel="noreferrer"
+          style={{
+            display: "inline-block",
+            marginTop: 20,
+            padding: "10px 16px",
+            background: "#ff3b3b",
+            color: "#fff",
+            borderRadius: 8,
+            textDecoration: "none",
+            fontWeight: "bold"
+          }}
         >
-          ← Back
-        </button>
+          Read Full Article →
+        </a>
+      )}
 
-        <div className="article-title">{title}</div>
-
-        {loading ? (
-          <div className="article-loading">Loading article...</div>
-        ) : (
-          <div className="article-content">{content}</div>
-        )}
-
-      </div>
     </div>
   );
 }
