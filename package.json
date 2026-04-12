@@ -16,7 +16,9 @@
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
     "styled-components": "^5.3.3",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "@mozilla/readability": "^0.4.4",
+    "jsdom": "^24.0.0"
   },
   "scripts": {
     "start": "react-scripts start",
